@@ -6,10 +6,12 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-flask-session = "*"
 psycopg2-binary = "*"
 Flask = "*"
 SQLAlchemy = "*"
+requests = "*"
+submit50 = "*"
+Flask-Session = "*"
 
 [requires]
 python_version = "3.6"

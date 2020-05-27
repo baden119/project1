@@ -1,10 +1,19 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>project 1</title>
-  </head>
-  <body>
-    git test change
-  </body>
-</html>
+{% extends "layout.html" %}
+
+{% block title %}Index{% endblock %}
+
+{% block body %}
+
+<nav>
+  <a class="navbar-brand" href="#"><h3>Books!<h3></a>
+  <ul>
+    <li><a class="btn btn-outline-success" href="/login" role="button">Login</a></li>
+    <li><a class="btn btn-outline-success" href="/register" role="button">Register</a></li>
+    <li><a class="btn btn-outline-success" href="/error" role="button">Error</a></li>
+  </ul>
+</nav>
+
+
+<h1>Booktime!</h1>
+
+{% endblock %}

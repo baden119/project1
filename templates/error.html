@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block title %}Error :({% endblock %}
+
+{% block body %}
+
+<nav>
+  <a class="navbar-brand" href="/"><h3>Books!<h3></a>
+  <ul>
+    <li><a class="btn btn-outline-success" href="#" role="button">Login</a></li>
+    <li><a class="btn btn-outline-success" href="/register" role="button">Register</a></li>
+    <li><a class="btn btn-outline-success" href="/register" role="button">Link</a></li>
+  </ul>
+</nav>
+
+
+  <div class="container">
+    <h1>Error!</h1>
+    <div class="container">
+      <img src="static/danny_error.png" alt="error">
+    </div>
+    <h1>{{error}}</h1>
+  </div>
+
+{% endblock %}
