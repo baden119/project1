@@ -37,7 +37,20 @@ def match_check(password, confirmation):
 @app.route("/")
 def index():
 
-    return render_template("index.html")
+    # Login Required, redirect to /login if no session.
+    if session.get("user_id") is None:
+            return redirect("/login")
+
+    # Get user info from users table in database
+    user_info = db.execute("SELECT * FROM users WHERE id = :user_id",
+                            {"user_id":session["user_id"]}).fetchone()
+
+    return render_template("index.html", username=user_info.username)
+
+@app.route("/error")
+def error():
+
+    return render_template("error.html", error="Error Button Pushed.")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -50,44 +63,41 @@ def login():
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
 
-        username=request.form.get("username")
+        username = request.form.get("username")
         password = request.form.get("password")
 
         # Query database for username
-        rows = db.execute("SELECT * FROM users WHERE username = :username",
+        user_data = db.execute("SELECT * FROM users WHERE username = :username",
                           {"username":username}).fetchone()
-        if rows is None:
+
+        # Ensure username exists and password is correct
+        if user_data is None:
             return render_template("error.html", error="Invalid Username")
 
-        print(type(rows))
-        print()
-        print(rows)
-
-
-        print(f"{rows.id}")
-        print(f"{rows.password}")
-
-        # # Ensure username exists and password is correct
-        # if len(rows) != 1 or not check_password_hash(rows[0]["hash"], request.form.get("password")):
-        #     return apology("invalid username and/or password", 400)
+        # Check that passwords match
+        if not (match_check(password, user_data.password)):
+            return render_template("error.html", error="Wrong Password")
 
         # Remember which user has logged in
-        session["user_id"] = rows.id
-
-
-        # Get user info from users table in database
-        user_info = db.execute("SELECT * FROM users WHERE id = :user_id",
-                                {"user_id":session["user_id"]}).fetchone()
-        print("user info:")
-        print(f"{user_info.id}")
-        print(f"{user_info.username}")
-        print(f"{user_info.password}")
+        session["user_id"] = user_data.id
 
         # Redirect user to home page
         return redirect("/")
 
     else:
         return render_template("login.html")
+
+@app.route("/search", methods=["GET", "POST"])
+def search():
+
+    user_info = db.execute("SELECT * FROM users WHERE id = :user_id",
+                            {"user_id":session["user_id"]}).fetchone()
+
+    query=request.form.get("query_data")
+    criteria=request.form.get("criteria")
+
+    return render_template("results.html", query=query, criteria=criteria, username=user_info.username)
+
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -110,29 +120,25 @@ def register():
 
         # Check username availability in database
         unavailable = db.execute("SELECT * FROM users WHERE username = :username",
-                        {"username":username})
+                        {"username":username}).fetchone()
+
         if unavailable:
             return render_template("error.html", error="Username Already Exists")
 
         # Insert new user into database, storing plaintext
-        result = db.execute("INSERT INTO users (username, password) VALUES(:username, :password)",
-                    {"username":username, "password":password})
+        db.execute("INSERT INTO users (username, password) VALUES(:username, :password)",
+                {"username":username, "password":password})
 
         db.commit()
 
-        # # Log user in
-        # rows = db.execute("SELECT * FROM users WHERE username = :username",
-        #                   username=request.form.get("username"))
-        #
-        # session["user_id"] = rows[0]["id"]
+        # Log user in
+        user_data = db.execute("SELECT * FROM users WHERE username = :username",
+                          {"username":username}).fetchone()
+
+        session["user_id"] = user_data.id
 
         # Redirect user to home page
         return redirect("/")
 
     else:
         return render_template("register.html")
-
-@app.route("/error")
-def error():
-
-    return render_template("error.html", error="Error Button Pushed.")

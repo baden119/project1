@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+
+{% block title %}Results{% endblock %}
+
+{% block body %}
+
+<nav>
+  <a class="navbar-brand" href="/"><h3>Books!<h3></a>
+  <ul>
+    <li><a class="btn btn-outline-success" href="/register" role="button">Link</a></li>
+    <li><a class="btn btn-outline-success" href="/login" role="button">Logout</a></li>
+    <li><a class="btn btn-success" href="#" role="button">{{username}}</a></li>
+  </ul>
+</nav>
+
+
+  <div class="container">
+
+    <h2>You searched for: {{query}}</h2>
+    <h2>criteria: {{criteria}}</h2>
+
+  </div>
+
+{% endblock %}
