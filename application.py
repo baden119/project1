@@ -47,6 +47,18 @@ def index():
 
     return render_template("index.html", username=user_info.username)
 
+@app.route("/book/<isbn>")
+def book(isbn):
+    """Lists details about a single book."""
+
+    user_info = db.execute("SELECT * FROM users WHERE id = :user_id",
+                            {"user_id":session["user_id"]}).fetchone()
+
+    db_query = db.execute("SELECT * FROM books WHERE isbn = :isbn",
+                        {"isbn": isbn}).fetchone()
+
+    return render_template("book.html", db_query=db_query, username=user_info.username)
+
 @app.route("/error")
 def error():
 
@@ -94,9 +106,36 @@ def search():
                             {"user_id":session["user_id"]}).fetchone()
 
     query=request.form.get("query_data")
+    query = '%' + query + '%'
     criteria=request.form.get("criteria")
 
-    return render_template("results.html", query=query, criteria=criteria, username=user_info.username)
+    ###WHY DOSENT THIS WORK????###
+    # db_query = db.execute("SELECT * FROM books WHERE :criteria LIKE :query",
+    #                         {"criteria": criteria, "query": query}).fetchall()
+
+
+    ##CONDITIONAL STATEMENTS###
+
+    if criteria == 'title':
+        print("conditional title detected")
+
+        db_query = db.execute("SELECT * FROM books WHERE title LIKE :query",
+                            {"query": query}).fetchall()
+
+    elif criteria == 'author':
+        print("conditional author detected")
+
+        db_query = db.execute("SELECT * FROM books WHERE author LIKE :query",
+                            {"query": query}).fetchall()
+
+    else:
+        print("conditional isbn detected")
+
+        db_query = db.execute("SELECT * FROM books WHERE isbn LIKE :query",
+                            {"query": query}).fetchall()
+
+
+    return render_template("results.html", db_query=db_query, username=user_info.username)
 
 
 @app.route("/register", methods=["GET", "POST"])
