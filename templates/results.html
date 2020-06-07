@@ -23,7 +23,8 @@
             <li>{{ item.author }}</li>
             <li>{{ item.year }}</li>
             <li>{{ item.isbn }}</li>
-            <li><a href="{{ url_for('book', isbn=item.isbn) }}">LINK</a>
+            <li><a href="{{ url_for('book', isbn=item.isbn) }}">INFO</a>
+            <li><a href="{{ url_for('review', isbn=item.isbn) }}">Write a Review</a>
             <br>
           {% endfor %}
         </ul>

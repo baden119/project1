@@ -113,27 +113,18 @@ def search():
     # db_query = db.execute("SELECT * FROM books WHERE :criteria LIKE :query",
     #                         {"criteria": criteria, "query": query}).fetchall()
 
-
     ##CONDITIONAL STATEMENTS###
-
     if criteria == 'title':
-        print("conditional title detected")
-
         db_query = db.execute("SELECT * FROM books WHERE title LIKE :query",
                             {"query": query}).fetchall()
 
     elif criteria == 'author':
-        print("conditional author detected")
-
         db_query = db.execute("SELECT * FROM books WHERE author LIKE :query",
                             {"query": query}).fetchall()
 
     else:
-        print("conditional isbn detected")
-
         db_query = db.execute("SELECT * FROM books WHERE isbn LIKE :query",
                             {"query": query}).fetchall()
-
 
     return render_template("results.html", db_query=db_query, username=user_info.username)
 
@@ -181,3 +172,33 @@ def register():
 
     else:
         return render_template("register.html")
+
+
+@app.route("/review/<isbn>", methods=["GET", "POST"])
+def review(isbn):
+    """Write a book review"""
+    # Login Required, redirect to /login if no session.
+    if session.get("user_id") is None:
+        return redirect("/login")
+
+    user_info = db.execute("SELECT * FROM users WHERE id = :user_id",
+    {"user_id":session["user_id"]}).fetchone()
+
+    db_query = db.execute("SELECT * FROM books WHERE isbn = :isbn",
+    {"isbn": isbn}).fetchone()
+
+    # User reached route via POST (as by submitting a form via POST)
+    if request.method == "POST":
+
+        rating = request.form.get("rating")
+
+        review_text = request.form.get("review_text")
+
+        print(rating)
+        print()
+        print(review_text)
+
+        return render_template("error.html", error="Review Submitted!")
+
+    else:
+        return render_template("review.html", db_query=db_query, username=user_info.username)
