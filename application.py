@@ -1,5 +1,6 @@
 import os
 import requests
+import time
 
 from flask import Flask, session, redirect, render_template, request
 from flask_session import Session
@@ -54,10 +55,27 @@ def book(isbn):
     user_info = db.execute("SELECT * FROM users WHERE id = :user_id",
                             {"user_id":session["user_id"]}).fetchone()
 
-    db_query = db.execute("SELECT * FROM books WHERE isbn = :isbn",
+    book_info = db.execute("SELECT * FROM books WHERE isbn = :isbn",
                         {"isbn": isbn}).fetchone()
 
-    return render_template("book.html", db_query=db_query, username=user_info.username)
+    reviews = db.execute("SELECT review_text, rating, submission_dt, username FROM reviews JOIN users ON reviews.reviewer_id = users.id WHERE isbn = :isbn",
+                        {"isbn": isbn}).fetchall()
+
+
+    # Getting info object from goodreads API
+    res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": "biFJnnfgoPuXUMSwYm1rw", "isbns": isbn})
+
+    # Accessing average goodreads rating from API data
+    api_info = res.json()
+    book_info_dict = api_info["books"][0]
+    goodreads_average = book_info_dict["average_rating"]
+
+    ratings=[]
+    for review in reviews:
+        ratings.append(review.rating)
+    local_average = (round((sum(ratings) / len(ratings)), 2))
+
+    return render_template("book.html", book_info=book_info, local_average=local_average, goodreads_average = goodreads_average, reviews=reviews, username=user_info.username)
 
 @app.route("/error")
 def error():
@@ -99,35 +117,6 @@ def login():
     else:
         return render_template("login.html")
 
-@app.route("/search", methods=["GET", "POST"])
-def search():
-
-    user_info = db.execute("SELECT * FROM users WHERE id = :user_id",
-                            {"user_id":session["user_id"]}).fetchone()
-
-    query=request.form.get("query_data")
-    query = '%' + query + '%'
-    criteria=request.form.get("criteria")
-
-    ###WHY DOSENT THIS WORK????###
-    # db_query = db.execute("SELECT * FROM books WHERE :criteria LIKE :query",
-    #                         {"criteria": criteria, "query": query}).fetchall()
-
-    ##CONDITIONAL STATEMENTS###
-    if criteria == 'title':
-        db_query = db.execute("SELECT * FROM books WHERE title LIKE :query",
-                            {"query": query}).fetchall()
-
-    elif criteria == 'author':
-        db_query = db.execute("SELECT * FROM books WHERE author LIKE :query",
-                            {"query": query}).fetchall()
-
-    else:
-        db_query = db.execute("SELECT * FROM books WHERE isbn LIKE :query",
-                            {"query": query}).fetchall()
-
-    return render_template("results.html", db_query=db_query, username=user_info.username)
-
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -156,8 +145,8 @@ def register():
             return render_template("error.html", error="Username Already Exists")
 
         # Insert new user into database, storing plaintext
-        db.execute("INSERT INTO users (username, password) VALUES(:username, :password)",
-                {"username":username, "password":password})
+        db.execute("INSERT INTO users (username, password, created) VALUES(:username, :password, :created)",
+                {"username":username, "password":password, "created":time.strftime('%Y-%m-%d %H:%M:%S')})
 
         db.commit()
 
@@ -172,7 +161,6 @@ def register():
 
     else:
         return render_template("register.html")
-
 
 @app.route("/review/<isbn>", methods=["GET", "POST"])
 def review(isbn):
@@ -190,15 +178,55 @@ def review(isbn):
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
 
-        rating = request.form.get("rating")
+#  need to INSERT
+    # Reviewer ID   session["user_id"]
+    # ISBN          isbn
+    # rating
+    # review text
+    # datetime      time.strftime('%Y-%m-%d %H:%M:%S')
 
+
+        rating = request.form.get("rating")
         review_text = request.form.get("review_text")
 
+        db.execute("INSERT INTO reviews (reviewer_id, isbn, rating, review_text, submission_dt) VALUES (:reviewer_id, :isbn, :rating, :review_text, :submission_dt)",
+        {"reviewer_id":session["user_id"], "isbn":isbn, "rating":rating, "review_text":review_text, "submission_dt":time.strftime('%Y-%m-%d %H:%M:%S')})
+        db.commit()
+        print("review submitted?")
         print(rating)
         print()
         print(review_text)
 
-        return render_template("error.html", error="Review Submitted!")
+        return render_template("error.html", error="Review Submitted?")
 
     else:
         return render_template("review.html", db_query=db_query, username=user_info.username)
+
+@app.route("/search", methods=["GET", "POST"])
+def search():
+
+    user_info = db.execute("SELECT * FROM users WHERE id = :user_id",
+    {"user_id":session["user_id"]}).fetchone()
+
+    query=request.form.get("query_data")
+    query = '%' + query + '%'
+    criteria=request.form.get("criteria")
+
+    ###WHY DOSENT THIS WORK????###
+    # db_query = db.execute("SELECT * FROM books WHERE :criteria LIKE :query",
+    #                         {"criteria": criteria, "query": query}).fetchall()
+
+    ##CONDITIONAL STATEMENTS###
+    if criteria == 'title':
+        db_query = db.execute("SELECT * FROM books WHERE title LIKE :query",
+        {"query": query}).fetchall()
+
+    elif criteria == 'author':
+        db_query = db.execute("SELECT * FROM books WHERE author LIKE :query",
+        {"query": query}).fetchall()
+
+    else:
+        db_query = db.execute("SELECT * FROM books WHERE isbn LIKE :query",
+        {"query": query}).fetchall()
+
+    return render_template("results.html", db_query=db_query, username=user_info.username)

@@ -7,7 +7,7 @@
 <nav>
   <a class="navbar-brand" href="/"><h3>Books!<h3></a>
   <ul>
-    <li><a class="btn btn-outline-success" href="/register" role="button">Link</a></li>
+    <li><a class="btn btn-outline-success" href="{{ url_for('book', isbn=db_query.isbn) }}" role="button">Book Info</a></li>
     <li><a class="btn btn-outline-success" href="/login" role="button">Logout</a></li>
     <li><a class="btn btn-success" href="#" role="button">{{username}}</a></li>
   </ul>
