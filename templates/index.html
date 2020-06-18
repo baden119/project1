@@ -4,18 +4,23 @@
 
 {% block body %}
 
-<nav>
-  <a class="navbar-brand" href="#"><h3>Books!<h3></a>
-  <ul>
-    <li><a class="btn btn-outline-success" href="/error" role="button">Error</a></li>
-    <li><a class="btn btn-outline-success" href="/login" role="button">Logout</a></li>
-    <li><a class="btn btn-success" href="#" role="button">{{username}}</a></li>
-  </ul>
+<nav id="navbar">
+		<div class="container">
+			<ul>
+        <li style="float:left;"><a class="btn btn-info">Project 1: Books</a></li>
+        <li><a class="btn btn-outline-info" href="/error" role="button">Error</a></li>
+        <li><a class="btn btn-outline-info" href="/login" role="button">Logout</a></li>
+        <li><a class="btn btn-info" href="#" role="button">{{username}}</a></li>
+			</ul>
+		</div>
 </nav>
 
-<div class="container">
-  <h1>Booktime!</h1>
 
+<div class="container">
+
+  <div class="container">
+      <img class="main-image" src="/static/main-image.png" alt="Books">
+  </div>
   <h2>Welcome, {{username}}!</h2>
 
   <div class="container">
@@ -42,7 +47,7 @@
             </div>
 
             <div class="form-group">
-                <button class="btn btn-success">Search</button>
+                <button class="btn btn-info">Search</button>
             </div>
         </form>
       </div>

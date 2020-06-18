@@ -4,15 +4,16 @@
 
 {% block body %}
 
-<nav>
-  <a class="navbar-brand" href="/"><h3>Books!<h3></a>
-  <ul>
-    <li><a class="btn btn-outline-success" href="/register" role="button">Link</a></li>
-    <li><a class="btn btn-outline-success" href="/login" role="button">Logout</a></li>
-    <li><a class="btn btn-success" href="#" role="button">{{username}}</a></li>
-  </ul>
-</nav>
 
+<nav id="navbar">
+		<div class="container">
+			<ul>
+        <li style="float:left;"><a class="btn btn-outline-info" href="/" role="button">Home</a></li>
+        <li><a class="btn btn-outline-info" href="/login" role="button">Logout</a></li>
+        <li><a class="btn btn-info" href="#" role="button">{{username}}</a></li>
+			</ul>
+		</div>
+</nav>
 
   <div class="container">
     <h2> Search Results: </h2>

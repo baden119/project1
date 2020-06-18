@@ -4,33 +4,36 @@
 
 {% block body %}
 
-<nav>
-  <a class="navbar-brand" href="/"><h3>Books!<h3></a>
-  <ul>
-    <li><a class="btn btn-outline-success" href="/register" role="button">Link</a></li>
-    <li><a class="btn btn-outline-success" href="/login" role="button">Logout</a></li>
-    <li><a class="btn btn-success" href="#" role="button">{{username}}</a></li>
-  </ul>
+
+<nav id="navbar">
+		<div class="container">
+			<ul>
+        <li style="float:left;"><a class="btn btn-outline-info" href="/" role="button">Home</a></li>
+        <li><a class="btn btn-outline-info" href="/login" role="button">Logout</a></li>
+        <li><a class="btn btn-info" href="#" role="button">{{username}}</a></li>
+			</ul>
+		</div>
 </nav>
 
   <div class="info-box">
-    User reviews for:<br>
-    <h3>{{ book_info.title }}</h3>
+    <h3><b>{{ book_info.title }}</b></h3>
     <h5>by {{ book_info.author }}({{ book_info.year }})</h5>
+    <small>ISBN:{{ book_info.isbn }}</small>
     <br>
-    ISBN:{{ book_info.isbn }}
     <br>
-    <h3>Local Average: {{local_average}}</h3>
+    <h4><u>Review Averages:</u></h4>
     <br>
-    <h3>Goodreads Average: {{goodreads_average}}
+    <h5>Local Average:</h5> <h3>{{local_average}}</h3>
     <br>
-    <a class="btn btn-success" href="{{ url_for('review', isbn=book_info.isbn) }}" role="button">Write a review!</a>
+    <h5>Goodreads Average:</h5> <h3>{{goodreads_average}}
+    <br>
+    <a class="btn btn-info" href="{{ url_for('review', isbn=book_info.isbn) }}" role="button">Write a review!</a>
   </div>
 
   <div class="row justify-content-center">
     <div class="col-lg-10 col-xs-12">
+      <h3>{{message}}</h3>
       {%for review in reviews%}
-
         <div class="review-box">
           <div class="heading">
             <p><small>Rating:</small> {{review.rating}}/5 <small>Reviewer:</small>  {{ review.username }}</p>
@@ -47,24 +50,3 @@
   </div>
 
 {% endblock %}
-
-
-<div class="review-box">
-  <div class="heading">
-    <p><a href='#'>Username</a> | 06/06/2020 </p>
-  </div>
-  <div class="container">
-    <fieldset class="rating">
-      <input type="radio" name="rating" value="5" /><label class = "full" for="star5" title="5 Stars"></label>
-      <input type="radio" name="rating" value="4" /><label class = "full" for="star4" title="4 Stars"></label>
-      <input type="radio" name="rating" value="3" checked /><label class = "full" for="star3" title="3 Stars"></label>
-      <input type="radio" name="rating" value="2" /><label class = "full" for="star2" title="2 Stars"></label>
-      <input type="radio" name="rating" value="1" /><label class = "full" for="star1" title="1 Star"></label>
-    </fieldset>
-  </div>
-<br>
-<br>
-  <div class="container">
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-  </div>
-</div>

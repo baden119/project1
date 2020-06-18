@@ -2,7 +2,7 @@ import os
 import requests
 import time
 
-from flask import Flask, session, redirect, render_template, request
+from flask import Flask, session, redirect, render_template, request, url_for
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -58,7 +58,7 @@ def book(isbn):
     book_info = db.execute("SELECT * FROM books WHERE isbn = :isbn",
                         {"isbn": isbn}).fetchone()
 
-    reviews = db.execute("SELECT review_text, rating, submission_dt, username FROM reviews JOIN users ON reviews.reviewer_id = users.id WHERE isbn = :isbn",
+    reviews = db.execute("SELECT review_text, rating, submission_dt, username FROM reviews JOIN users ON reviews.reviewer_id = users.id WHERE isbn = :isbn ORDER BY submission_dt DESC;",
                         {"isbn": isbn}).fetchall()
 
 
@@ -70,6 +70,9 @@ def book(isbn):
     book_info_dict = api_info["books"][0]
     goodreads_average = book_info_dict["average_rating"]
 
+    if len(reviews) == 0:
+        return render_template("book.html", book_info=book_info, goodreads_average = goodreads_average, local_average="None yet", username=user_info.username, message = "No User Reviews, Would you like to write one?")
+    # Calculating average rating from local users reviews
     ratings=[]
     for review in reviews:
         ratings.append(review.rating)
@@ -178,26 +181,14 @@ def review(isbn):
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
 
-#  need to INSERT
-    # Reviewer ID   session["user_id"]
-    # ISBN          isbn
-    # rating
-    # review text
-    # datetime      time.strftime('%Y-%m-%d %H:%M:%S')
-
-
         rating = request.form.get("rating")
         review_text = request.form.get("review_text")
 
         db.execute("INSERT INTO reviews (reviewer_id, isbn, rating, review_text, submission_dt) VALUES (:reviewer_id, :isbn, :rating, :review_text, :submission_dt)",
         {"reviewer_id":session["user_id"], "isbn":isbn, "rating":rating, "review_text":review_text, "submission_dt":time.strftime('%Y-%m-%d %H:%M:%S')})
         db.commit()
-        print("review submitted?")
-        print(rating)
-        print()
-        print(review_text)
 
-        return render_template("error.html", error="Review Submitted?")
+        return redirect(url_for('book', isbn=isbn))
 
     else:
         return render_template("review.html", db_query=db_query, username=user_info.username)
@@ -228,5 +219,9 @@ def search():
     else:
         db_query = db.execute("SELECT * FROM books WHERE isbn LIKE :query",
         {"query": query}).fetchall()
+
+    if len(db_query) == 0:
+        return render_template("error.html", error="No matching results in database.")
+
 
     return render_template("results.html", db_query=db_query, username=user_info.username)
