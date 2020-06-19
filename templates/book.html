@@ -4,8 +4,22 @@
 
 {% block body %}
 
+<div class="info-box">
+	<h3><b>{{ book_info.title }}</b></h3>
+	<h5>by {{ book_info.author }}({{ book_info.year }})</h5>
+	<small>ISBN:{{ book_info.isbn }}</small>
+	<br>
+	<br>
+	<h4><u>Review Averages:</u></h4>
+	<br>
+	<h5>Local Average:</h5> <h3>{{local_average}}</h3>
+	<br>
+	<h5>Goodreads Average:</h5> <h3>{{goodreads_average}}
+	<br>
+	<a class="btn btn-info" href="{{ url_for('review', isbn=book_info.isbn) }}" role="button">Write a review!</a>
+</div>
 
-<nav id="navbar">
+<nav class="my_navbar book_navbar">
 		<div class="container">
 			<ul>
         <li style="float:left;"><a class="btn btn-outline-info" href="/" role="button">Home</a></li>
@@ -15,20 +29,6 @@
 		</div>
 </nav>
 
-  <div class="info-box">
-    <h3><b>{{ book_info.title }}</b></h3>
-    <h5>by {{ book_info.author }}({{ book_info.year }})</h5>
-    <small>ISBN:{{ book_info.isbn }}</small>
-    <br>
-    <br>
-    <h4><u>Review Averages:</u></h4>
-    <br>
-    <h5>Local Average:</h5> <h3>{{local_average}}</h3>
-    <br>
-    <h5>Goodreads Average:</h5> <h3>{{goodreads_average}}
-    <br>
-    <a class="btn btn-info" href="{{ url_for('review', isbn=book_info.isbn) }}" role="button">Write a review!</a>
-  </div>
 
   <div class="row justify-content-center">
     <div class="col-lg-10 col-xs-12">
