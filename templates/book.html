@@ -3,50 +3,50 @@
 {% block title %}Book Details{% endblock %}
 
 {% block body %}
+<div class="bookinfo_page">
+	<nav>
+		<a class="btn-primary">Project 1: Books</a>
+		<ul>
+		  <li><a class="btn-secondary" href="/error">Error</a></li>
+		  <li><a class="btn-secondary" href="/login">Logout</a></li>
+		  <li><a class="btn-primary" href="#">{{username}}</a></li>
+		</ul>
+	</nav>
 
-<div class="info-box">
-	<h3><b>{{ book_info.title }}</b></h3>
-	<h5>by {{ book_info.author }}({{ book_info.year }})</h5>
-	<small>ISBN:{{ book_info.isbn }}</small>
-	<br>
-	<br>
-	<h4><u>Review Averages:</u></h4>
-	<br>
-	<h5>Local Average:</h5> <h3>{{local_average}}</h3>
-	<br>
-	<h5>Goodreads Average:</h5> <h3>{{goodreads_average}}
-	<br>
-	<a class="btn btn-info" href="{{ url_for('review', isbn=book_info.isbn) }}" role="button">Write a review!</a>
-</div>
-
-<nav class="my_navbar book_navbar">
-		<div class="container">
-			<ul>
-        <li style="float:left;"><a class="btn btn-outline-info" href="/" role="button">Home</a></li>
-        <li><a class="btn btn-outline-info" href="/login" role="button">Logout</a></li>
-        <li><a class="btn btn-info" href="#" role="button">{{username}}</a></li>
-			</ul>
+  <div class="info-box">
+		<div class="book-info">
+			<h3><b>{{ book_info.title }}</b></h3>
+			<h5>by {{ book_info.author }}({{ book_info.year }})</h5>
+			<small>ISBN:{{ book_info.isbn }}</small>
 		</div>
-</nav>
+		<div class="review-averages">
+			<h4><u>Review Averages:</u></h4>
+			<br>
+			<h5>Local Average:</h5> <h3>{{local_average}}</h3>
+			<br>
+			<h5>Goodreads Average:</h5> <h3>{{goodreads_average}}
+		</div>
+		<br>
+		<a class="btn-primary" href="{{ url_for('review', isbn=book_info.isbn) }}" role="button">Write a review!</a>
+	</div>
+
+  <div class="reviews">
+		<h3>{{message}}</h3>
+		{%for review in reviews%}
+			<div class="user_review_box">
+				<div class="heading">
+					<p><small>Rating:</small> {{review.rating}}/5 <small>Reviewer:</small>  {{ review.username }}</p>
+				</div>
+				<div class="review_text">
+					<p>{{review.review_text}}</p>
+				</div>
+				<p><small>Review Submitted: {{ review.submission_dt.strftime("%d-%m-%y %H:%M") }}</small></p>
+			</div>
+		{% endfor %}
+		</div>
+	</div>
 
 
-  <div class="row justify-content-center">
-    <div class="col-lg-10 col-xs-12">
-      <h3>{{message}}</h3>
-      {%for review in reviews%}
-        <div class="review-box">
-          <div class="heading">
-            <p><small>Rating:</small> {{review.rating}}/5 <small>Reviewer:</small>  {{ review.username }}</p>
-          </div>
-        <br>
-          <div class="container">
-            <p>{{review.review_text}}</p>
-            <p><small>Review Submitted: {{ review.submission_dt.strftime("%d-%m-%y %H:%M") }}</small></p>
-          </div>
-        </div>
-      {% endfor %}
-
-    </div>
-  </div>
+</div> <!-- bookinfo_page -->
 
 {% endblock %}

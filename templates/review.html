@@ -4,16 +4,15 @@
 
 {% block body %}
 
-<nav class="my_navbar">
-		<div class="container">
-			<ul>
-        <li style="float:left;"><a class="btn btn-outline-info" href="/" role="button">Home</a></li>
-        <li><a class="btn btn-outline-info" href="{{ url_for('book', isbn=db_query.isbn) }}" role="button">Book Info</a></li>
-        <li><a class="btn btn-outline-info" href="/login" role="button">Logout</a></li>
-        <li><a class="btn btn-info" href="#" role="button">{{username}}</a></li>
-			</ul>
-		</div>
+<nav>
+	<a class="btn-primary">Project 1: Books</a>
+	<ul>
+		<li><a class="btn-secondary" href="{{ url_for('book', isbn=db_query.isbn) }}">Book Info</a></li>
+		<li><a class="btn-secondary" href="/login">Logout</a></li>
+		<li><a class="btn-primary" href="#">{{username}}</a></li>
+	</ul>
 </nav>
+
 
 <div class="container">
   <h3>Write a review for: </h3>

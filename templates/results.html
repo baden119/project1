@@ -3,33 +3,31 @@
 {% block title %}Results{% endblock %}
 
 {% block body %}
+<div class="results_page">
+	<nav>
+		<a class="btn-primary">Project 1: Books</a>
+		<ul>
+		  <li><a class="btn-secondary" href="/login">Logout</a></li>
+		  <li><a class="btn-primary" href="#">{{username}}</a></li>
+		</ul>
+	</nav>
 
-
-<nav class="my_navbar">
-		<div class="container">
-			<ul>
-        <li style="float:left;"><a class="btn btn-outline-info" href="/" role="button">Home</a></li>
-        <li><a class="btn btn-outline-info" href="/login" role="button">Logout</a></li>
-        <li><a class="btn btn-info" href="#" role="button">{{username}}</a></li>
-			</ul>
-		</div>
-</nav>
-
-  <div class="container">
-    <h2> Search Results: </h2>
-      <h3>
-        <ul>
-          {% for item in db_query %}
-            <li>{{ item.title }}</li>
-            <li>{{ item.author }}</li>
-            <li>{{ item.year }}</li>
-            <li>{{ item.isbn }}</li>
-            <li><a href="{{ url_for('book', isbn=item.isbn) }}">INFO</a>
-            <li><a href="{{ url_for('review', isbn=item.isbn) }}">Write a Review</a>
-            <br>
-          {% endfor %}
-        </ul>
-    </h3>
-  </div>
+	<h2> Search Results: </h2>
+	        {% for item in db_query %}
+					<div class="result_box">
+						<h3>
+							<ul>
+				          <li>{{ item.title }}</li>
+				          <li>{{ item.author }}</li>
+				          <li>{{ item.year }}</li>
+				          <li>{{ item.isbn }}</li>
+				          <li><a href="{{ url_for('book', isbn=item.isbn) }}">INFO</a>
+				          <li><a href="{{ url_for('review', isbn=item.isbn) }}">Write a Review</a>
+				          <br>
+							</ul>
+						</h3>
+					</div> <!-- Results Box -->
+	        {% endfor %}
+</div> <!-- Results page -->
 
 {% endblock %}
