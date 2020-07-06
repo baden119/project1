@@ -4,37 +4,29 @@
 
 {% block body %}
 
-<nav>
-  <a class="navbar-brand" href="/"><h3>Books!<h3></a>
-  <ul>
-    <li><a class="btn btn-success" href="#" role="button">Login</a></li>
-    <li><a class="btn btn-outline-success" href="/register" role="button">Register</a></li>
-    <li><a class="btn btn-outline-success" href="#" role="button">Link</a></li>
-  </ul>
-</nav>
+<div class="multi_form">
+  
+	<nav>
+		<a class="btn-primary" href="/">Project 1: Books</a>
+		<ul>
+			<li><a class="btn-primary" href="/register" role="button">Register</a></li>
+		</ul>
+	</nav>
 
+  <div class="form-container">
+        <form action="{{ url_for('login') }}" method="post">
 
-<div class="container">
-  <div class="row justify-content-center">
-    <div class="col-lg-6 col-xs-12">
-      <h1>Login<h1>
-      <form action="{{ url_for('login') }}" method="post">
+            <div class="login">
+                <input name="username" placeholder="User Name">
+                <input type="password" name="password" placeholder="Password">
+            </div>
 
-          <div class="form-group">
-              <input class="form-control" name="username" placeholder="User Name">
-          </div>
-
-          <div class="form-group">
-              <input class="form-control" type="password" name="password" placeholder="Password">
-          </div>
-
-          <div class="form-group">
-              <button class="btn btn-primary">Login</button>
-          </div>
-      </form>
-    </div>
+            <div>
+                <button class="btn-primary">Login</button>
+            </div>
+        </form>
   </div>
-</div>
 
+</div><!-- Multi-form -->
 
 {% endblock %}

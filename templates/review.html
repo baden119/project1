@@ -4,43 +4,40 @@
 
 {% block body %}
 
-<nav>
-	<a class="btn-primary">Project 1: Books</a>
-	<ul>
-		<li><a class="btn-secondary" href="{{ url_for('book', isbn=db_query.isbn) }}">Book Info</a></li>
-		<li><a class="btn-secondary" href="/login">Logout</a></li>
-		<li><a class="btn-primary" href="#">{{username}}</a></li>
-	</ul>
-</nav>
+<div class="multi_form">
+	<nav>
+		<a class="btn-primary" href="/">Project 1: Books</a>
+		<ul>
+			<li><a class="btn-secondary" href="{{ url_for('book', isbn=db_query.isbn) }}">Book Info</a></li>
+			<li><a class="btn-secondary" href="/login">Logout</a></li>
+			<li><a class="btn-primary" href="#">{{username}}</a></li>
+		</ul>
+	</nav>
 
 
-<div class="container">
-  <h3>Write a review for: </h3>
-  <h4>{{ db_query.title }}</h4>
-  <h5>by {{ db_query.author }} ({{ db_query.year }})</h5>
-  <div class="row justify-content-center">
-    <div class="col-lg-6 col-xs-12">
-      <form action="{{ url_for('review', isbn=db_query.isbn) }}" method="post">
+	<div class="form-container">
+	  <h3>Write a review for: </h3>
+	  <h4>{{ db_query.title }}</h4>
+	  <h5>by {{ db_query.author }} ({{ db_query.year }})</h5>
+	      <form action="{{ url_for('review', isbn=db_query.isbn) }}" method="post">
+					<div class="rating-box">
+		        <fieldset class="rating">
+		          <input type="radio" id="star5" name="rating" value="5" /><label class = "full" for="star5" title="5 Stars"></label>
+		          <input type="radio" id="star4" name="rating" value="4" /><label class = "full" for="star4" title="4 Stars"></label>
+		          <input type="radio" id="star3" name="rating" value="3" /><label class = "full" for="star3" title="3 Stars"></label>
+		          <input type="radio" id="star2" name="rating" value="2" /><label class = "full" for="star2" title="2 Stars"></label>
+		          <input type="radio" id="star1" name="rating" value="1" /><label class = "full" for="star1" title="1 Star"></label>
+		        </fieldset>
+					</div>
+	        <div>
+	          <textarea class="form-control" name="review_text" rows="5"></textarea>
+	        </div>
 
-        <fieldset class="rating">
-          <input type="radio" id="star5" name="rating" value="5" /><label class = "full" for="star5" title="5 Stars"></label>
-          <input type="radio" id="star4" name="rating" value="4" /><label class = "full" for="star4" title="4 Stars"></label>
-          <input type="radio" id="star3" name="rating" value="3" /><label class = "full" for="star3" title="3 Stars"></label>
-          <input type="radio" id="star2" name="rating" value="2" /><label class = "full" for="star2" title="2 Stars"></label>
-          <input type="radio" id="star1" name="rating" value="1" /><label class = "full" for="star1" title="1 Star"></label>
-        </fieldset>
-
-        <div class="form-group">
-          <textarea class="form-control" name="review_text" rows="5"></textarea>
-        </div>
-
-        <div class="form-group">
-            <button class="btn btn-info">Submit</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
+	        <div>
+	            <button class="btn-primary">Submit</button>
+	        </div>
+	      </form>
+	</div>
+</div><!-- Multi-form -->
 
 {% endblock %}

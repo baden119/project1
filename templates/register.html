@@ -4,43 +4,38 @@
 
 {% block body %}
 
-<nav>
-  <a class="navbar-brand" href="/"><h3>Books!<h3></a>
-  <ul>
-    <li><a class="btn btn-outline-success" href="/login" role="button">Login</a></li>
-    <li><a class="btn btn-success" href="/register" role="button">Register</a></li>
-    <li><a class="btn btn-outline-success" href="#" role="button">Link</a></li>
-  </ul>
-</nav>
+<div class="multi_form">
+
+	<nav>
+		<a class="btn-primary" href="/">Project 1: Books</a>
+		<ul>
+			<li><a class="btn-primary" href="/login" role="button">Login</a></li>
+		</ul>
+	</nav>
+
+  <div class="form-container">
+    <h1>Register New Account<h1>
+
+    <form action="{{ url_for('register') }}" method="post">
+
+        <div class="form-group">
+            <input name="username" placeholder="User Name">
+        </div>
+
+        <div class="form-group">
+            <input type="password" name="password" placeholder="Password">
+        </div>
+
+        <div class="form-group">
+          <input type="password" name="confirmation" placeholder="Confirm Password">
+        </div>
 
 
-<div class="container">
-  <div class="row justify-content-center">
-    <div class="col-lg-6 col-xs-12">
-      <h1>Register New Account<h1>
-
-        <form action="{{ url_for('register') }}" method="post">
-
-            <div class="form-group">
-                <input class="form-control" name="username" placeholder="User Name">
-            </div>
-
-            <div class="form-group">
-                <input class="form-control" type="password" name="password" placeholder="Password">
-            </div>
-
-            <div class="form-group">
-              <input class="form-control" type="password" name="confirmation" placeholder="Confirm Password">
-            </div>
-
-
-            <div class="form-group">
-                <button class="btn btn-primary">submit?</button>
-            </div>
-        </form>
-      </div>
-    </div>
-</div>
-
+        <div class="form-group">
+            <button class="btn-primary">Submit</button>
+        </div>
+    </form>
+  </div>
+</div><!-- Multi-form -->
 
 {% endblock %}

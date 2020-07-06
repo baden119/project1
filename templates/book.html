@@ -5,29 +5,25 @@
 {% block body %}
 <div class="bookinfo_page">
 	<nav>
-		<a class="btn-primary">Project 1: Books</a>
+		<a class="btn-primary" href="/">Project 1: Books</a>
 		<ul>
-		  <li><a class="btn-secondary" href="/error">Error</a></li>
 		  <li><a class="btn-secondary" href="/login">Logout</a></li>
-		  <li><a class="btn-primary" href="#">{{username}}</a></li>
+		  <li><a class="btn-primary">{{username}}</a></li>
 		</ul>
 	</nav>
 
   <div class="info-box">
 		<div class="book-info">
-			<h3><b>{{ book_info.title }}</b></h3>
-			<h5>by {{ book_info.author }}({{ book_info.year }})</h5>
-			<small>ISBN:{{ book_info.isbn }}</small>
+			<p id="title">{{ book_info.title }}</p>
+			<p id="author">{{ book_info.author }} ({{ book_info.year }})</p>
+			<p id="isbn">ISBN: {{ book_info.isbn }}</p>
 		</div>
 		<div class="review-averages">
-			<h4><u>Review Averages:</u></h4>
-			<br>
-			<h5>Local Average:</h5> <h3>{{local_average}}</h3>
-			<br>
-			<h5>Goodreads Average:</h5> <h3>{{goodreads_average}}
+			<h4>Ratings:</h4>
+			<p>Local Average: <h3>{{local_average}}</h3></p>
+			<p>Goodreads Average: <h3>{{goodreads_average}}</h3></p>
 		</div>
-		<br>
-		<a class="btn-primary" href="{{ url_for('review', isbn=book_info.isbn) }}" role="button">Write a review!</a>
+		<a class="btn-primary" href="{{ url_for('review', isbn=book_info.isbn) }}">Write a review</a>
 	</div>
 
   <div class="reviews">
@@ -35,17 +31,18 @@
 		{%for review in reviews%}
 			<div class="user_review_box">
 				<div class="heading">
-					<p><small>Rating:</small> {{review.rating}}/5 <small>Reviewer:</small>  {{ review.username }}</p>
+					<ul>
+						<li> <small>Reviewer:</small> {{ review.username }}</li>
+						<li> <small>Rating:</small> {{review.rating}}/5</li>
+					</ul>
 				</div>
 				<div class="review_text">
 					<p>{{review.review_text}}</p>
 				</div>
-				<p><small>Review Submitted: {{ review.submission_dt.strftime("%d-%m-%y %H:%M") }}</small></p>
+				<p id="submitted_timestamp"><small>Review Submitted: {{ review.submission_dt.strftime("%d-%m-%y %H:%M") }}</small></p>
 			</div>
 		{% endfor %}
-		</div>
 	</div>
-
 
 </div> <!-- bookinfo_page -->
 
