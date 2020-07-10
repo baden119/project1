@@ -2,7 +2,7 @@ import os
 import requests
 import time
 
-from flask import Flask, session, redirect, render_template, request, url_for
+from flask import Flask, jsonify, session, redirect, render_template, request, url_for
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -65,20 +65,21 @@ def book(isbn):
     # Getting info object from goodreads API
     res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": "biFJnnfgoPuXUMSwYm1rw", "isbns": isbn})
 
-    # Accessing average goodreads rating from API data
+    # Accessing average goodreads rating and review count from API data
     api_info = res.json()
     book_info_dict = api_info["books"][0]
+    goodreads_reviewcount = str(book_info_dict["reviews_count"])
     goodreads_average = book_info_dict["average_rating"]
 
     if len(reviews) == 0:
-        return render_template("book.html", book_info=book_info, goodreads_average = goodreads_average, local_average="None yet", username=user_info.username, message = "No User Reviews, Would you like to write one?")
+        return render_template("book.html", book_info=book_info, goodreads_average = goodreads_average, goodreads_reviewcount = goodreads_reviewcount, local_average="No Ratings Yet", username=user_info.username, message = "No User Reviews, Would you like to write one?")
     # Calculating average rating from local users reviews
     ratings=[]
     for review in reviews:
         ratings.append(review.rating)
     local_average = (round((sum(ratings) / len(ratings)), 2))
 
-    return render_template("book.html", book_info=book_info, local_average=local_average, goodreads_average = goodreads_average, reviews=reviews, username=user_info.username)
+    return render_template("book.html", book_info=book_info, local_average=local_average, goodreads_average = goodreads_average, goodreads_reviewcount = goodreads_reviewcount, reviews=reviews, username=user_info.username)
 
 @app.route("/error")
 def error():
@@ -181,9 +182,14 @@ def review(isbn):
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
 
+
+        # Request review data from html and return error if it's missing.
         rating = request.form.get("rating")
         review_text = request.form.get("review_text")
+        if (rating is None) or len(review_text) == 0:
+            return render_template("error.html", error="Review must include text and a rating out of 5.")
 
+        # Insert review into reviews table in database
         db.execute("INSERT INTO reviews (reviewer_id, isbn, rating, review_text, submission_dt) VALUES (:reviewer_id, :isbn, :rating, :review_text, :submission_dt)",
         {"reviewer_id":session["user_id"], "isbn":isbn, "rating":rating, "review_text":review_text, "submission_dt":time.strftime('%Y-%m-%d %H:%M:%S')})
         db.commit()
@@ -225,3 +231,33 @@ def search():
 
 
     return render_template("results.html", db_query=db_query, username=user_info.username)
+
+@app.route("/api/book/<isbn>")
+def api_book(isbn):
+
+    # Get info from data tables
+    book_info = db.execute("SELECT * FROM books WHERE isbn = :isbn",
+                        {"isbn": isbn}).fetchone()
+
+    raw_ratings = db.execute("SELECT rating FROM reviews WHERE isbn = :isbn",
+                        {"isbn": isbn}).fetchall()
+
+    # Return error if book not found in database
+    if book_info is None:
+        return jsonify({"error": "Invalid ISBN :("}), 404
+
+    # Access rating values in raw data and calculate an average score
+    ratings = []
+    for rating in raw_ratings:
+        ratings.append(rating.values()[0])
+    ratings_average = (round((sum(ratings) / len(ratings)), 2))
+
+    # Collate data and return in JSON format
+    return jsonify({
+    "isbn": book_info.isbn,
+    "title": book_info.title,
+    "author": book_info.author,
+    "year": book_info.year,
+    "review_count": len(ratings),
+    "average_score": ratings_average
+    })

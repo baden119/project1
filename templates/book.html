@@ -22,6 +22,7 @@
 			<h4>Ratings:</h4>
 			<p>Local Average: <h3>{{local_average}}</h3></p>
 			<p>Goodreads Average: <h3>{{goodreads_average}}</h3></p>
+			<p>Total Goodreads Ratings: <h3>{{goodreads_reviewcount}}</h3></p>
 		</div>
 		<a class="btn-primary" href="{{ url_for('review', isbn=book_info.isbn) }}">Write a review</a>
 	</div>
